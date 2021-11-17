@@ -13,11 +13,11 @@ Date:   Thu Jun 18 10:29:58 2020 -0400
 diff --git a/CHANGELOG.md b/CHANGELOG.md
 index 86d70e3e0..588d807b1 100644
 
-<h3>2. Какому тегу соответствует коммит 85024d3?</h>
+<h3>2. Какому тегу соответствует коммит 85024d3?</h3>
 <b>$ git log 85024d3 -2 --oneline</b>  
 v0.12.23
 
-<h4>Сколько родителей у коммита b8d720? Напишите их хеши.</h4>  
+<h3>Сколько родителей у коммита b8d720? Напишите их хеши.</h3>  
 <b>$ git log b8d720 -3 --all --oneline</b>  
 
 <b>$ git log b8d720 -3 --all --oneline --reverse</b>  
@@ -26,7 +26,7 @@ v0.12.23
   
 
 
-<h3>Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.</h4>
+<h3>Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.</h3>
 <b>$ git log v0.12.23..v0.12.24 --oneline</b>  
 
 	33ff1c03b (tag: v0.12.24) v0.12.24
@@ -41,6 +41,24 @@ v0.12.23
 	225466bc3 Cleanup after v0.12.23 release
 
 
-<h4>Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).</h4>
-<h4>Найдите все коммиты в которых была изменена функция globalPluginDirs.</h4>
-<h4>Кто автор функции synchronizedWriters?</h4>
+<h3>Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).</h3>
+<b>$ git log -G "func providerSource(\s)*[(]" --source --all --oneline</b>
+Находит коммиты
+	cb8bb69ee       refs/remotes/origin/revamp-cli-config (origin/revamp-cli-config) cliconfig: Move HCL 1.0-based language out of the way
+	5af1e6234       refs/remotes/origin/alisdair/getproviders-retries-bad-branch-do-not-use main: Honor explicit provider_installation CLI config when present
+	8c928e835       refs/remotes/origin/alisdair/getproviders-retries-bad-branch-do-not-use main: Consult local directories as potential mirrors of providers
+  
+далее делаем чекаут 8c928e835
+<b>$ git grep -p -n --break --heading "func providerSource"</b>
+Находит 
+	provider_source.go
+	3=import (
+	19:func providerSource(services *disco.Disco) getproviders.Source {
+  
+Наверное оно не пошло в main, смущает коммент к коммиту. Или это потом было добавлено, что функция выпиливается из модуля. Короче надо смотреть что там. 
+
+<h3>Найдите все коммиты в которых была изменена функция globalPluginDirs.</h3>
+ 
+<h3>Кто автор функции synchronizedWriters?</h3>
+
+
