@@ -51,7 +51,8 @@ v0.12.23
   
 далее делаем чекаут 8c928e835
 <b>$ git grep -p -n --break --heading "func providerSource"</b>
-Находит 
+Находит
+ 
 	provider_source.go
 	3=import (
 	19:func providerSource(services *disco.Disco) getproviders.Source {
