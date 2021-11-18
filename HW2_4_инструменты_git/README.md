@@ -58,7 +58,19 @@ v0.12.23
 Наверное оно не пошло в main, смущает коммент к коммиту. Или это потом было добавлено, что функция выпиливается из модуля. Короче надо смотреть что там. 
 
 <h3>Найдите все коммиты в которых была изменена функция globalPluginDirs.</h3>
- 
-<h3>Кто автор функции synchronizedWriters?</h3>
+<b>$ git grep -p -n --break --heading "globalPluginDirs"</b> 
+Находит файл источник - plugins.go
 
+Далеее
+<b>$ git log -L :'globalPluginDirs':plugins.go --pretty=oneline -q</b>
+показывает нам коммиты
+
+	78b12205587fe839f10d946ea3fdc06719decb05 Remove config.go and update things using its aliases
+	52dbf94834cb970b510f2fba853a5b49ad9b1a46 keep .terraform.d/plugins for discovery
+	41ab0aef7a0fe030e84018973a64135b11abcd70 Add missing OS_ARCH dir to global plugin paths
+	66ebff90cdfaa6938f26f908c7ebad8d547fea17 move some more plugin search path logic to command
+	8364383c359a6b738a436d1b7745ccdce178df47 Push plugin discovery down into command package
+   
+<h3>Кто автор функции synchronizedWriters?</h3>
+Нет такой функции ни в main, ни в истории, есть FieldWriters. 
 
