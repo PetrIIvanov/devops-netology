@@ -43,7 +43,8 @@ v0.12.23
 
 <h3>Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).</h3>
 <b>$ git log -G "func providerSource(\s)*[(]" --source --all --oneline</b>
-Находит коммиты
+Находит коммиты  
+
 	cb8bb69ee       refs/remotes/origin/revamp-cli-config (origin/revamp-cli-config) cliconfig: Move HCL 1.0-based language out of the way
 	5af1e6234       refs/remotes/origin/alisdair/getproviders-retries-bad-branch-do-not-use main: Honor explicit provider_installation CLI config when present
 	8c928e835       refs/remotes/origin/alisdair/getproviders-retries-bad-branch-do-not-use main: Consult local directories as potential mirrors of providers
