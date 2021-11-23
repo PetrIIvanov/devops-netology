@@ -6,10 +6,10 @@
 4. Done
 
 5. Какие ресурсы выделены по-умолчанию?
-- RAM 4GB
-- CPU 2
-- VBoxVGA 4Mb
-- Disk 64Gb
-- Net IntelPRO/1000 MT NAT
+	- RAM 4GB
+	- CPU 2
+	- VBoxVGA 4Mb
+	- Disk 64Gb
+	- Net IntelPRO/1000 MT NAT
  
 6. 
