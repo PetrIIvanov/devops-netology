@@ -18,6 +18,7 @@
 	
 	~~~
 	ls 2>&1 1>/dev/null | xterm( или другой) 
+	upd: ls 2>/dev/pts/1 #(у нас при этом /dev/pts/0)
 	~~~
 
 <h3>5. Получится ли одновременно передать команде файл на stdin и вывести ее stdout в другой файл? Приведите работающий пример.</h3>
@@ -81,6 +82,22 @@
 	$ man -wK "proc*cmdline"
 	No manual entry for proc*cmdline
 	~~~
+	
+	man proc # Как и написано выше, показывает команду, которой запустили процесс. За исключением процессов-зомби. 
+	/proc/[pid]/cmdline
+              This read-only file holds the complete command line for the process, unless the process  is  a  zombie.
+              In  the  latter case, there is nothing in this file: that is, a read on this file will return 0 charac‐
+              ters.  The command-line arguments appear in this file as a set  of  strings  separated  by  null  bytes
+              ('\0'), with a further null byte after the last string.
+			  
+	/proc/[pid]/exe #символическая ссылка на файл, как и ожидалось :)
+              Under  Linux 2.2 and later, this file is a symbolic link containing the actual pathname of the executed
+              command.  This symbolic link can be dereferenced normally; attempting to open it  will  open  the  exe‐
+              cutable.   You  can  even type /proc/[pid]/exe to run another copy of the same executable that is being
+              run by process [pid].  If the pathname has been unlinked, the symbolic link  will  contain  the  string
+              '(deleted)'  appended  to the original pathname.  In a multithreaded process, the contents of this sym‐
+              bolic link are not  available  if  the  main  thread  has  already  terminated  (typically  by  calling
+              pthread_exit(3)).
 
 <h3>11. Узнайте, какую наиболее старшую версию набора инструкций SSE поддерживает ваш процессор с помощью /proc/cpuinfo</h3>
 
@@ -102,15 +119,9 @@ not a tty
 
 <h3>13. Бывает, что есть необходимость переместить запущенный процесс из одной сессии в другую. Попробуйте сделать это, воспользовавшись reptyr. Например, так можно перенести в screen процесс, который вы запустили по ошибке в обычной SSH-сессии.</h3>
 
-	Как бы его ещё создать такого, чтобы он прожил достаточно, чтобы успеть его перенести. 
-	~~~
-	#!/bin/bash
-
-	echo "started"
-	sleep 600s
-	echo "ended"
-	~~~
-	Если такое написать, то работать не будет. У вашего процесса, есть подпроцесс sleep и до свидания, увидимся в следующей версии. 
+	C top получилось перенести в другой терминал. Однако пришлось помучатся с Ubuntu. 
+	echo 0 > /proc/sys/kernel/yama/ptrace_scope # Permission denied
+	echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope # работает, помог пп. 14
 	
 <h3>14. sudo echo string > /root/new_file не даст выполнить перенаправление под обычным пользователем, так как перенаправлением занимается процесс shell'а, который запущен без sudo под вашим пользователем. Для решения данной проблемы можно использовать конструкцию echo string | sudo tee /root/new_file. Узнайте что делает команда tee и почему в отличие от sudo echo команда с sudo tee будет работать.</h3>
 
