@@ -76,3 +76,29 @@ Done
 Для простоты работайте в данном задании под root (sudo -i). 
 Под обычным пользователем требуются дополнительные опции (--map-root-user) и т.д.</h3>
 
+	root@vagrant:~# lsns
+			NS TYPE   NPROCS   PID USER            COMMAND
+	4026531835 cgroup    127     1 root            /sbin/init
+	4026531836 pid       126     1 root            /sbin/init
+	4026531837 user      127     1 root            /sbin/init
+	4026531838 uts       125     1 root            /sbin/init
+	4026531839 ipc       127     1 root            /sbin/init
+	4026531840 mnt       115     1 root            /sbin/init
+	4026531860 mnt         1    33 root            kdevtmpfs
+	4026531992 net       127     1 root            /sbin/init
+	4026532162 mnt         1   405 root            /lib/systemd/systemd-udevd
+	4026532163 uts         1   405 root            /lib/systemd/systemd-udevd
+	4026532164 mnt         1   408 systemd-network /lib/systemd/systemd-networkd
+	4026532183 mnt         1   588 systemd-resolve /lib/systemd/systemd-resolved
+	4026532184 mnt         4   668 netdata         /usr/sbin/netdata -D
+	4026532185 mnt         2  1636 root            unshare -f --pid --mount-proc sleep 1h (вот оно)
+	4026532186 pid         1  1637 root            sleep 1h
+	4026532249 mnt         1   621 root            /usr/sbin/irqbalance --foreground
+	4026532250 mnt         1   633 root            /lib/systemd/systemd-logind
+	4026532251 uts         1   633 root            /lib/systemd/systemd-logind
+	
+  
+	root@vagrant:~# nsenter -t 1637 -p -r ps -ef
+	UID          PID    PPID  C STIME TTY          TIME CMD
+	root           1       0  0 23:21 pts/1    00:00:00 sleep 1h
+	root           2       0  0 23:33 pts/1    00:00:00 ps -ef
