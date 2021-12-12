@@ -128,3 +128,59 @@
 	  /dev/sda5  vgvagrant lvm2 a--  <63.50g     0
 	  
 <h3>9. Создайте общую volume-group на этих двух PV.</h3>
+
+	root@vagrant:~# vgcreate nightVG0 /dev/md126 /dev/md127
+	  Volume group "nightVG0" successfully created
+	  
+	root@vagrant:~# vgdisplay nightVG0
+	  --- Volume group ---
+	  VG Name               nightVG0
+	  System ID
+	  Format                lvm2
+	  Metadata Areas        2
+	  Metadata Sequence No  1
+	  VG Access             read/write
+	  VG Status             resizable
+	  MAX LV                0
+	  Cur LV                0
+	  Open LV               0
+	  Max PV                0
+	  Cur PV                2
+	  Act PV                2
+	  VG Size               3.12 GiB
+	  PE Size               4.00 MiB
+	  Total PE              800
+	  Alloc PE / Size       0 / 0
+	  Free  PE / Size       800 / 3.12 GiB
+	  VG UUID               YBt1O0-mA79-xnEY-qhf0-0Wmd-fRWm-gO40wE
+
+	  
+<h3>10. Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.</h3>
+
+	С этим уже проблема, потому что PV raid0 уже задействован в предыдущей группе. Создам его на текущей. 
+	
+	root@vagrant:~# lvcreate -n vol_100m -L 100M nightVG0
+	  Logical volume "vol_100m" created.
+	root@vagrant:~# lvs
+	  LV       VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+	  vol_100m nightVG0  -wi-a----- 100.00m
+	  root     vgvagrant -wi-ao---- <62.54g
+	  swap_1   vgvagrant -wi-ao---- 980.00m
+	  
+<h3>11. Создайте mkfs.ext4 ФС на получившемся LV</h3>
+
+	root@vagrant:~# mkfs.ext4 /dev/nightVG0/vol_100m
+	mke2fs 1.45.5 (07-Jan-2020)
+	Creating filesystem with 25600 4k blocks and 25600 inodes
+
+	Allocating group tables: done
+	Writing inode tables: done
+	Creating journal (1024 blocks): done
+	Writing superblocks and filesystem accounting information: done
+	
+<h3>12. Смонтируйте этот раздел в любую директорию, например, /tmp/new</h3>
+
+	root@vagrant:~# mkdir /tmp/new
+	root@vagrant:~# mount /dev/nightVG0/vol_100m /tmp/new
+	
+<>
