@@ -183,4 +183,95 @@
 	root@vagrant:~# mkdir /tmp/new
 	root@vagrant:~# mount /dev/nightVG0/vol_100m /tmp/new
 	
-<>
+<h3>13. Поместите туда тестовый файл, например wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz</h3>
+
+	done
+	
+<h3>14. Прикрепите вывод lsblk</h3>
+
+	root@vagrant:~# lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT
+	NAME                     SIZE FSTYPE            TYPE  MOUNTPOINT
+	sda                       64G                   disk
+	├─sda1                   512M vfat              part  /boot/efi
+	├─sda2                     1K                   part
+	└─sda5                  63.5G LVM2_member       part
+	  ├─vgvagrant-root      62.6G ext4              lvm   /
+	  └─vgvagrant-swap_1     980M swap              lvm   [SWAP]
+	sdb                      2.5G                   disk
+	├─sdb1                   1.9G linux_raid_member part
+	│ └─md127                1.9G LVM2_member       raid1
+	└─sdb2                   652M                   part
+	  └─md126                1.3G LVM2_member       raid0
+		└─nightVG0-vol_100m  100M ext4              lvm   /tmp/new
+	sdc                      2.5G                   disk
+	├─sdc1                   1.9G linux_raid_member part
+	│ └─md127                1.9G LVM2_member       raid1
+	└─sdc2                   652M linux_raid_member part
+	  └─md126                1.3G LVM2_member       raid0
+		└─nightVG0-vol_100m  100M ext4              lvm   /tmp/new
+
+
+<h3>15. Протестируйте целостность файла:
+
+	root@vagrant:~# gzip -t /tmp/new/test.gz
+	root@vagrant:~# echo $?
+	0
+</h3>
+
+	root@vagrant:~# gzip -t /tmp/new/test.gz
+	root@vagrant:~# echo $?
+	0
+	
+<h3>16. Используя pvmove, переместите содержимое PV с RAID0 на RAID1</h3>
+
+
+	root@vagrant:~# pvmove -b /dev/md126 /dev/md127	
+	root@vagrant:~# lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT
+	NAME                     SIZE FSTYPE            TYPE  MOUNTPOINT
+	sda                       64G                   disk
+	├─sda1                   512M vfat              part  /boot/efi
+	├─sda2                     1K                   part
+	└─sda5                  63.5G LVM2_member       part
+	  ├─vgvagrant-root      62.6G ext4              lvm   /
+	  └─vgvagrant-swap_1     980M swap              lvm   [SWAP]
+	sdb                      2.5G                   disk
+	├─sdb1                   1.9G linux_raid_member part
+	│ └─md127                1.9G LVM2_member       raid1
+	│   └─nightVG0-vol_100m  100M ext4              lvm   /tmp/new
+	└─sdb2                   652M                   part
+	  └─md126                1.3G LVM2_member       raid0
+	sdc                      2.5G                   disk
+	├─sdc1                   1.9G linux_raid_member part
+	│ └─md127                1.9G LVM2_member       raid1
+	│   └─nightVG0-vol_100m  100M ext4              lvm   /tmp/new
+	└─sdc2                   652M linux_raid_member part
+	  └─md126                1.3G LVM2_member       raid0	
+
+
+<h3>17. Сделайте --fail на устройство в вашем RAID1 md</h3>
+
+	root@vagrant:~# mdadm --manage --set-faulty /dev/md127 /dev/sdc1
+	
+<h3>18. Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии</h3>
+
+	root@vagrant:~# dmesg | grep md127
+	[ 1951.057840] md/raid1:md127: not clean -- starting background reconstruction
+	[ 1951.057841] md/raid1:md127: active with 2 out of 2 mirrors
+	[ 1951.057858] md127: detected capacity change from 0 to 1997537280
+	[ 1951.060145] md: resync of RAID array md127
+	[ 1960.523521] md: md127: resync done.
+	[ 4245.530392] md/raid1:md127: Disk failure on sdc1, disabling device.
+				   md/raid1:md127: Operation continuing on 1 devices.
+
+<h3>19. Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
+
+	root@vagrant:~# gzip -t /tmp/new/test.gz
+	root@vagrant:~# echo $?
+	0
+</h3>
+
+	Всё ок. 
+	
+<h3>20. Погасите тестовый хост, vagrant destroy.</h3>
+
+	done
