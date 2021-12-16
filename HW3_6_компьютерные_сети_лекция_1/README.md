@@ -36,7 +36,8 @@ Fixed IP от билайна
 
 <h3>4. Какому провайдеру принадлежит ваш IP адрес? Какой автономной системе AS? Воспользуйтесь утилитой whois</h3>
 
-CORBINA-BROADBAND-STATIC
+CORBINA-BROADBAND-STATIC 
+
 
 <h3>5. Через какие сети проходит пакет, отправленный с вашего компьютера на адрес 8.8.8.8? Через какие AS? Воспользуйтесь утилитой traceroute</h3>
 
@@ -69,7 +70,7 @@ over a maximum of 30 hops:
 																				   Packets               Pings
 	 Host                                                                        Loss%   Snt   Last   Avg  Best  Wrst StDev
 	 1. _gateway                                                                  0.0%    52    0.6   0.6   0.3   1.3   0.2
-	 2. 192.168.88.1                                                              0.0%    52    1.7   2.4   1.7  21.9   2.8
+	 2. 192.168.xx.x                                                              0.0%    52    1.7   2.4   1.7  21.9   2.8
 	 3. 78.107.181.110                                                            3.8%    52    3.1   6.7   3.0  57.3   9.7
 	 4. (waiting for reply)
 	 5. 213.234.224.137                                                           2.0%    51    4.1   4.9   4.0  30.4   3.9
@@ -89,3 +90,34 @@ over a maximum of 30 hops:
 	19. (waiting for reply)
 	20. (waiting for reply)
 	21. dns.google                                                               11.8%    51   19.6  20.8  18.5  40.9   4.9
+
+<h3>7. Какие DNS сервера отвечают за доменное имя dns.google? Какие A записи? воспользуйтесь утилитой dig</h3>
+
+	8.8.8.8 primary
+	8.8.4.4 secondary
+
+	Записи такие:
+	dns.google.com.         900     IN      A       8.8.8.8
+	dns.google.com.         900     IN      A       8.8.4.4
+	
+<h3>8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP? воспользуйтесь утилитой dig</h3>
+
+т.е. у них получается прямо от корня DNS есть домен google вместо com и т.п.
+
+	;; ANSWER SECTION:
+	8.8.8.8.in-addr.arpa.   3705    IN      PTR     dns.google.
+
+	;; ANSWER SECTION:
+	4.4.8.8.in-addr.arpa.   19778   IN      PTR     dns.google.
+	
+
+Разница кстати есть, если полное имя использовать или не полное. 
+	vagrant@vagrant:~$ ping dns.google.
+	PING dns.google (8.8.8.8) 56(84) bytes of data.
+	64 bytes from dns.google (8.8.8.8): icmp_seq=1 ttl=57 time=43.8 ms
+	64 bytes from dns.google (8.8.8.8): icmp_seq=2 ttl=57 time=21.2 ms
+
+	vagrant@vagrant:~$ ping dns.google
+	PING dns.google (8.8.4.4) 56(84) bytes of data.
+	64 bytes from dns.google (8.8.4.4): icmp_seq=1 ttl=105 time=18.5 ms
+	64 bytes from dns.google (8.8.4.4): icmp_seq=2 ttl=105 time=72.1 m
