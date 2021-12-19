@@ -78,7 +78,8 @@ Linux: ip link
 		bond-miimon 100
 		bond-slaves none
 
-Или такой:
+Или такой:  
+
 	# The primary network interface
 	auto bond0
 	iface bond0 inet static
@@ -109,15 +110,18 @@ Linux: ip link
 
 И там и там команда arp. 
 
-показать таблицу:
+показать таблицу:  
+
 	Windows: arp -a 
 	Linux: arp -n
 
-Удалить кеш:
+Удалить кеш:  
+
 	Windows: arp -d (под админом) или netsh interface ip delete arpcache (тоже под админом) 
 	Linux: sudo ip -s -s neigh flush all
 	
-Удалить один:
+Удалить один:  
+
 	Windows: arp -d 172.25.54.102 (под админом)
 	Linux: sudo arp -d 10.0.2.3
 
