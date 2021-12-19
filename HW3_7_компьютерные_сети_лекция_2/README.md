@@ -42,4 +42,64 @@ Linux: ip link
 		  pre-up sysctl -w net.ipv6.conf.eth0/700.disable_ipv6=1
 		  
 
+И ещё нужно отредактировать /etc/modules, чтобы включить модуль 802 при загрузке. 
+
 <h3>4. Какие типы агрегации интерфейсов есть в Linux? Какие опции есть для балансировки нагрузки? Приведите пример конфига.</h3>
+
+Типы есть LACP - открытый стандарт и всякие частные собственные стандарты у Cisco, например. 
+
+Типы балансировки  (mode) указаны тут: https://www.kernel.org/doc/Documentation/networking/bonding.txt
+Нет смысла их перепечатывать.  
+
+
+Пример конфига (с сайта Ubuntu)
+
+	# eth0 is manually configured, and slave to the "bond0" bonded NIC
+	auto eth0
+	iface eth0 inet manual
+		bond-master bond0
+		bond-primary eth0
+
+	# eth1 ditto, thus creating a 2-link bond.
+	auto eth1
+	iface eth1 inet manual
+		bond-master bond0
+
+	# bond0 is the bonding NIC and can be used like any other normal NIC.
+	# bond0 is configured using static network information.
+	auto bond0
+	iface bond0 inet static
+		address 192.168.1.10
+		gateway 192.168.1.1
+		netmask 255.255.255.0
+		bond-mode active-backup
+		bond-miimon 100
+		bond-slaves none
+
+Или такой:
+	# The primary network interface
+	auto bond0
+	iface bond0 inet static
+		address 192.168.1.150
+		netmask 255.255.255.0	
+		gateway 192.168.1.1
+		dns-nameservers 192.168.1.1 8.8.8.8
+		dns-search domain.local
+			slaves eth0 eth1
+			bond_mode 0
+			bond-miimon 100
+			bond_downdelay 200
+			bond_updelay 200
+
+<h3>5. Сколько IP адресов в сети с маской /29 ? Сколько /29 подсетей можно получить из сети с маской /24. Приведите несколько примеров /29 подсетей внутри сети 10.10.10.0/24.</h3>
+
+- 2^(32-29=3) = 8 адресов. Из них доступных для присваивания 6
+- 2^ (29-24=5) = 32 сетки
+- 10.10.10.0/29,10.10.10.8/29, 10.10.10.16/29
+
+
+<h3>6. Задача: вас попросили организовать стык между 2-мя организациями. Диапазоны 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 уже заняты. 
+Из какой подсети допустимо взять частные IP адреса? Маску выберите из расчета максимум 40-50 хостов внутри подсети.</h3>
+
+
+
