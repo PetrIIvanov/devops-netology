@@ -19,6 +19,7 @@ Linux: ip link
 	Warning: vconfig is deprecated and might be removed in the future, please migrate to ip(route2) as soon as possible!
 	
 Поэтому так
+	~~~
 	vagrant@vagrant:~$ sudo ip link add link eth0 name eth0.700 type vlan id 700
 	vagrant@vagrant:~$ ip -details link
 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
@@ -30,7 +31,7 @@ Linux: ip link
 		vlan protocol 802.1Q id 700 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
 	vagrant@vagrant:~$ sudo ip addr add 10.100.10.77/24 dev eth0.700
 	vagrant@vagrant:~$ sudo ip link set dev eth0.700 up
-	
+	~~~
 	
 Чтобы изменения были постоянными нужно редактировать /etc/network/interfaces
 
