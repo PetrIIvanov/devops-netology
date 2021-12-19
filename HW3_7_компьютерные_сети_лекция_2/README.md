@@ -18,7 +18,8 @@ Linux: ip link
 	vagrant@vagrant:~$ vconfig --help
 	Warning: vconfig is deprecated and might be removed in the future, please migrate to ip(route2) as soon as possible!
 	
-Поэтому так
+Поэтому так  
+
 	~~~
 	vagrant@vagrant:~$ sudo ip link add link eth0 name eth0.700 type vlan id 700
 	vagrant@vagrant:~$ ip -details link
