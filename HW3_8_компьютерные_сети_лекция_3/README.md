@@ -64,13 +64,13 @@
 	iface dummy0 inet static
 		  address 192.168.1.150
 		  netmask 255.255.255.0
-		  up route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.150
+		  post-up route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.150
 
 	auto dummy1
 	iface dummy1 inet static
 		  address 192.168.2.150
 		  netmask 255.255.255.0
-		  up route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.2.150
+		  post-up route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.2.150
 
 Перезапускаем (dummy можно руками стартовать сначала, потом будет автоматом стартовать)
 
@@ -83,3 +83,44 @@
 		inet 10.100.10.77/24 brd 10.100.10.255 scope global eth0.700
 		inet 192.168.1.150/24 brd 192.168.1.255 scope global dummy0
 		inet 192.168.2.150/24 brd 192.168.2.255 scope global dummy1
+
+Результаты, всё пингуется:
+
+	root@vagrant:/home/vagrant# ping 192.168.1.150
+	PING 192.168.1.150 (192.168.1.150) 56(84) bytes of data.
+	64 bytes from 192.168.1.150: icmp_seq=1 ttl=64 time=0.025 ms
+	64 bytes from 192.168.1.150: icmp_seq=2 ttl=64 time=0.031 ms
+	64 bytes from 192.168.1.150: icmp_seq=3 ttl=64 time=0.034 ms
+	64 bytes from 192.168.1.150: icmp_seq=4 ttl=64 time=0.031 ms
+	64 bytes from 192.168.1.150: icmp_seq=5 ttl=64 time=0.031 ms
+	64 bytes from 192.168.1.150: icmp_seq=6 ttl=64 time=0.038 ms
+	^C
+	--- 192.168.1.150 ping statistics ---
+	6 packets transmitted, 6 received, 0% packet loss, time 5129ms
+	rtt min/avg/max/mdev = 0.025/0.031/0.038/0.004 ms
+	root@vagrant:/home/vagrant# ping 192.168.2.150
+	PING 192.168.2.150 (192.168.2.150) 56(84) bytes of data.
+	64 bytes from 192.168.2.150: icmp_seq=1 ttl=64 time=0.040 ms
+	64 bytes from 192.168.2.150: icmp_seq=2 ttl=64 time=0.031 ms
+	^C
+	--- 192.168.2.150 ping statistics ---
+	2 packets transmitted, 2 received, 0% packet loss, time 1010ms
+	
+Добавляем маршруты:
+
+	root@vagrant:/home/vagrant# ip route add 172.16.10.0/24 dev dummy0
+	root@vagrant:/home/vagrant# ip route add 172.16.11.0/24 dev dummy1 metric 100
+	
+
+Смотрим:
+
+	root@vagrant:/home/vagrant# ip route show 172.16.10.0/24
+	172.16.10.0/24 dev dummy0 scope link
+	root@vagrant:/home/vagrant# ip route show 172.16.11.0/24
+	172.16.11.0/24 dev dummy1 scope link metric 100
+	root@vagrant:/home/vagrant# ip route show 192.168.1.0/24
+	192.168.1.0/24 via 192.168.1.150 dev dummy0 scope link
+	192.168.1.0/24 dev dummy0 proto kernel scope link src 192.168.1.150	
+	
+<h3>3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров</h3>
+
