@@ -34,6 +34,7 @@
 <h3>2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации</h3>
 
 Создание
+
 	root@vagrant:/etc/systemd/network# vim /etc/modules (добавляем dummy модуль при старте)
 	создаём в 
 	/etc/systemd/network/
@@ -77,6 +78,7 @@
 	#systemctl restart systemd-networkd
 
 Появились
+
 	root@vagrant:/home/vagrant# ip addr | grep "inet "
 		inet 127.0.0.1/8 scope host lo
 		inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
@@ -149,11 +151,13 @@
 	UNCONN           0                0                                   [::1]:8125                               [::]:*
 	UNCONN           0                0                                    [::]:sunrpc                             [::]:*
 
-bootpc - это DHCP клиент
-https://en.wikipedia.org/wiki/Bootstrap_Protocol
-
-sunrpc - это Sun Remote Procedure call
-https://en.wikipedia.org/wiki/Sun_RPC
+bootpc - это DHCP клиент 
+https://en.wikipedia.org/wiki/Bootstrap_Protocol 
+  
+sunrpc - это Sun Remote Procedure call 
+https://en.wikipedia.org/wiki/Sun_RPC 
+  
+  
 
 <h3>5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали.</h3>
 
