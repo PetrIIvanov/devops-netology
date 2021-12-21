@@ -124,3 +124,38 @@
 	
 <h3>3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров</h3>
 
+Вот пример. На машине запущен node_exporter и netdata, которая по нему работает. На порту 22 ssh, systemd-resolve - резолвит локальные адреса. 
+
+	root@vagrant:/home/vagrant# ss -tulpn | grep LISTEN
+
+	tcp    LISTEN   0        4096        127.0.0.53%lo:53             0.0.0.0:*      users:(("systemd-resolve",pid=662,fd=13))
+	tcp    LISTEN   0        128               0.0.0.0:22             0.0.0.0:*      users:(("sshd",pid=904,fd=3))
+	tcp    LISTEN   0        4096            127.0.0.1:8125           0.0.0.0:*      users:(("netdata",pid=894,fd=62))
+	tcp    LISTEN   0        4096              0.0.0.0:19999          0.0.0.0:*      users:(("netdata",pid=894,fd=4))
+	tcp    LISTEN   0        4096              0.0.0.0:111            0.0.0.0:*      users:(("rpcbind",pid=661,fd=4),("systemd",pid=1,fd=35))
+	tcp    LISTEN   0        128                  [::]:22                [::]:*      users:(("sshd",pid=904,fd=4))
+	tcp    LISTEN   0        4096                [::1]:8125              [::]:*      users:(("netdata",pid=894,fd=61))
+	tcp    LISTEN   0        4096                    *:9100                 *:*      users:(("node_exporter",pid=895,fd=3))
+	tcp    LISTEN   0        4096                 [::]:111               [::]:*      users:(("rpcbind",pid=661,fd=6),("systemd",pid=1,fd=37))
+	
+<h3>4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?</h3>
+
+	root@vagrant:/home/vagrant# ss -a -u
+	State            Recv-Q           Send-Q                      Local Address:Port                       Peer Address:Port          Process
+	UNCONN           0                0                               127.0.0.1:8125                            0.0.0.0:*
+	UNCONN           0                0                           127.0.0.53%lo:domain                          0.0.0.0:*
+	UNCONN           0                0                          10.0.2.15%eth0:bootpc                          0.0.0.0:*
+	UNCONN           0                0                                 0.0.0.0:sunrpc                          0.0.0.0:*
+	UNCONN           0                0                                   [::1]:8125                               [::]:*
+	UNCONN           0                0                                    [::]:sunrpc                             [::]:*
+
+bootpc - это DHCP клиент
+https://en.wikipedia.org/wiki/Bootstrap_Protocol
+
+sunrpc - это Sun Remote Procedure call
+https://en.wikipedia.org/wiki/Sun_RPC
+
+<h3>5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали.</h3>
+
+
+= приложить картинку = 
