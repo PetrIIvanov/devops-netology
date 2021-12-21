@@ -31,4 +31,55 @@
 											^
 		% Invalid input detected at '^' marker.
 
-<h3></h3>	
+<h3>2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации</h3>
+
+Создание
+	root@vagrant:/etc/systemd/network# vim /etc/modules (добавляем dummy модуль при старте)
+	создаём в 
+	/etc/systemd/network/
+
+	10-dummy0.netdev и 10-dummy1.netdev
+	---------------
+	[NetDev]
+	Name=dummy0 (dummy1)
+	Kind=dummy
+	---------------
+	
+Конфиг
+
+	# vim /etc/network/interfaces
+	-------------------------------------------------------------------
+	# interfaces(5) file used by ifup(8) and ifdown(8)
+	# Include files from /etc/network/interfaces.d:
+	source-directory /etc/network/interfaces.d
+
+	# add vlan 700 on eth0 - static IP address
+	auto eth0.700
+	iface eth0.700 inet static
+		  address 10.100.10.77
+		  netmask 255.255.255.0
+		  pre-up sysctl -w net.ipv6.conf.eth0/700.disable_ipv6=1
+
+	auto dummy0
+	iface dummy0 inet static
+		  address 192.168.1.150
+		  netmask 255.255.255.0
+		  up route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.150
+
+	auto dummy1
+	iface dummy1 inet static
+		  address 192.168.2.150
+		  netmask 255.255.255.0
+		  up route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.2.150
+
+Перезапускаем (dummy можно руками стартовать сначала, потом будет автоматом стартовать)
+
+	#systemctl restart systemd-networkd
+
+Появились
+	root@vagrant:/home/vagrant# ip addr | grep "inet "
+		inet 127.0.0.1/8 scope host lo
+		inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
+		inet 10.100.10.77/24 brd 10.100.10.255 scope global eth0.700
+		inet 192.168.1.150/24 brd 192.168.1.255 scope global dummy0
+		inet 192.168.2.150/24 brd 192.168.2.255 scope global dummy1
