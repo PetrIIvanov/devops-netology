@@ -80,9 +80,7 @@ def process_args(argv):
         sys.exit(2)
 
     for o, a in opts:
-        if o == "-v":
-            verbose = True
-        elif o in ("-h", "--help"):
+        if o in ("-h", "--help"):
             usage()
             sys.exit()
         elif o in ("-p", "--path"):
