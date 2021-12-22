@@ -134,3 +134,94 @@ if __name__ == "__main__":
     main()
 ~~~
 
+
+<h3>4. Наша команда разрабатывает несколько веб-сервисов, доступных по http. Мы точно знаем, 
+что на их стенде нет никакой балансировки, кластеризации, за DNS прячется конкретный IP сервера, 
+где установлен сервис. Проблема в том, что отдел, занимающийся нашей инфраструктурой очень часто 
+меняет нам сервера, поэтому IP меняются примерно раз в неделю, при этом сервисы сохраняют за 
+собой DNS имена. Это бы совсем никого не беспокоило, если бы несколько раз сервера не уезжали 
+в такой сегмент сети нашей компании, который недоступен для разработчиков. Мы хотим написать 
+скрипт, который опрашивает веб-сервисы, получает их IP, выводит информацию в стандартный вывод 
+в виде: <URL сервиса> - <его IP>. Также, должна быть реализована возможность проверки текущего 
+IP сервиса c его IP из предыдущей проверки. Если проверка будет провалена - оповестить об этом 
+в стандартный вывод сообщением: [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>.   
+
+Будем считать, что наша разработка реализовала сервисы: drive.google.com, mail.google.com, google.com. </h3>
+
+Скрипт:
+
+~~~python3
+#!/usr/bin/env python3
+
+import socket
+
+def check_host(host_name):
+
+    ip = ''
+    old_ip = ''
+    last_ip = ''
+
+    filename = host_name + '_ip.log'
+
+    try:
+        with open(filename,'r') as history:
+            old_ip = history.read()
+    except Exception as e:
+        #print('No history for ' + host_name + ' existing yet')
+        pass
+
+
+    if len(old_ip) > 8:
+        last_ip = old_ip.split('\n')[-2]
+        # [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>
+        # <URL сервиса> - <его IP>
+
+
+        #print('Last ip was: ' + last_ip)
+
+
+
+    try:
+        ip = socket.gethostbyname(host_name)
+
+        if (last_ip != ip) & (len(last_ip) > 0):
+            print('[ERROR] '+ host_name + ' IP mismatch: ' + last_ip + ' ' + ip)
+        else:
+            print(host_name + ' - ' + ip)
+
+        with open(filename, 'a') as out:
+            out.write(ip + '\n')
+    except Exception as e:
+        #print('Opps, ' + host_name + 'feels bad today')
+        #print(e)
+        pass
+
+    return
+
+def main():
+
+    #print (socket.gethostbyname('google.com'))
+    hosts_to_control = ['drive.google.com', 'mail.google.com', 'google.com']
+
+    for host in hosts_to_control:
+        check_host(host)
+
+    return 0
+
+if __name__ == "__main__":
+    main()
+~~~
+
+Тесты: 
+
+	vagrant@vagrant:~$ rm *_ip.log
+	vagrant@vagrant:~$ python3 control_ip.py
+	drive.google.com - 64.233.163.194
+	mail.google.com - 216.58.209.197
+	google.com - 216.58.210.142
+	vagrant@vagrant:~$ echo "ffffffffffff" > google.com_ip.log
+	vagrant@vagrant:~$ python3 control_ip.py
+	drive.google.com - 64.233.163.194
+	mail.google.com - 216.58.209.197
+	[ERROR] google.com IP mismatch: ffffffffffff 216.58.209.174
+
