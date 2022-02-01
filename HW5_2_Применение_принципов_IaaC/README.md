@@ -59,7 +59,7 @@
 	
 Поднял 3 хоста на vagrant, node1, node2
 	
-	~~~vagrant
+	~~~
 	Vagrant.configure("2") do |config|
 
 	  config.vm.box = "bento/ubuntu-20.04"
@@ -95,7 +95,7 @@
 	
 	
 	
-	Вывод:
+Вывод с контроллера (ещё с ним пришлось повозиться, чтобы прокинуть ключи rsa от хостов для ssh):
 	
 	vagrant@vagrant:~$ ansible --version
 	ansible [core 2.12.2]
@@ -108,5 +108,26 @@
 	  jinja version = 2.10.1
 	  libyaml = True
 	
+Тест:
+	vagrant@vagrant:~$ ansible -i /vagrant/inventory_local node1 -m ping
+	node1 | SUCCESS => {
+		"ansible_facts": {
+			"discovered_interpreter_python": "/usr/bin/python3"
+		},
+		"changed": false,
+		"ping": "pong"
+	}
 
 *Приложить вывод команд установленных версий каждой из программ, оформленный в markdown.*
+
+## Задача 4 (*)
+
+Воспроизвести практическую часть лекции самостоятельно.
+
+- Создать виртуальную машину.
+- Зайти внутрь ВМ, убедиться, что Docker установлен с помощью команды
+```
+docker ps
+```
+
+Done. Смотрите аттачменты. 
