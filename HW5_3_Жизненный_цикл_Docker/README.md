@@ -23,3 +23,15 @@ Hey, Netology
 
 ## Решение 1
 
+Файл манифеста
+
+	~~~docker
+	#home work :: TEST
+	FROM nginx:1.21.6
+
+	#change default page
+	COPY ./custom.html /usr/share/nginx/html/index.html
+	~~~
+
+ссылка на контейнер:	
+https://hub.docker.com/repository/docker/blackskif/netologynginx
