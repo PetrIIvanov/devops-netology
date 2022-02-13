@@ -35,3 +35,29 @@ Hey, Netology
 
 ссылка на контейнер:	
 https://hub.docker.com/repository/docker/blackskif/netologynginx
+
+## Задача 3
+
+- Запустите первый контейнер из образа ***centos*** c любым тэгом в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера;
+- Запустите второй контейнер из образа ***debian*** в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера;
+- Подключитесь к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```;
+- Добавьте еще один файл в папку ```/data``` на хостовой машине;
+- Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
+
+
+## Решение 3
+
+Команды и вывод
+
+	  107  docker run -it --rm -d -p 8081:80 --name d_centos --mount type=bind,source="$(pwd)"/Data,target=/Data centos
+	  111  docker run -it --rm -d -p 8082:80 --name d_debian --mount type=bind,source="$(pwd)"/Data,target=/Data debian
+	  112  docker ps
+	  113  docker exec d_centos ls /Data
+	  114  docker exec d_centos touch /Data/created_from_centos.txt
+	  116  touch ./Data/created_from_host.txt
+	  117  docker exec d_debian ls /Data
+	  118  history
+
+	vagrant@vagrant:~$ docker exec d_debian ls /Data
+	created_from_centos.txt
+	created_from_host.txt
