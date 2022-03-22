@@ -125,3 +125,28 @@ SELECT  QUERY_ID, SUM(DURATION) FROM information_schema.PROFILING WHERE QUERY_ID
 +----------+---------------+
 2 rows in set, 1 warning (0.00 sec)
 ~~~
+
+## Задача 4 
+
+Изучите файл `my.cnf` в директории /etc/mysql.
+
+Измените его согласно ТЗ (движок InnoDB):
+- Скорость IO важнее сохранности данных 
+- Нужна компрессия таблиц для экономии места на диске
+- Размер буффера с незакомиченными транзакциями 1 Мб 
+- Буффер кеширования 30% от ОЗУ 
+- Размер файла логов операций 100 Мб
+
+Приведите в ответе измененный файл `my.cnf`.
+
+~~~
+innodb_log_buffer_size         = 1M
+innodb_buffer_pool_size        = 256M
+innodb_file_per_table          = 1
+innodb_file_format             = Barracuda
+innodb_flush_method            = O_DSYNC
+innodb_flush_log_at_trx_commit = 2
+innodb_log_file_size           = 100M
+~~~
+
+---
