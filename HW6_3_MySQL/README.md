@@ -61,7 +61,7 @@
     
 Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
-
+  
 	~~~MYSQL
 	SELECT
 	USER AS User,
@@ -71,7 +71,8 @@
 	FROM INFORMATION_SCHEMA.USER_ATTRIBUTES
 	WHERE USER='test' AND HOST='localhost';
 	~~~
-Output:
+  
+Output:  
 	~~~
 	+------+-----------+--------------+---------+
 	| User | Host      | Full Name    | Comment |
@@ -79,4 +80,42 @@ Output:
 	| test | localhost | James Pretty | NULL    |
 	+------+-----------+--------------+---------+
 	1 row in set (0.01 sec)
+	~~~
+
+## Задача 3
+
+Установите профилирование `SET profiling = 1`.
+Изучите вывод профилирования команд `SHOW PROFILES;`.
+
+Исследуйте, какой `engine` используется в таблице БД `test_db` и **приведите в ответе**.
+  
+	~~~MYSQL
+	SELECT TABLE_NAME,
+		   ENGINE
+	FROM   information_schema.TABLES
+	WHERE  TABLE_SCHEMA = 'test_db';
+
+	--->> InnoDB
+
+	~~~
+  
+Измените `engine` и **приведите время выполнения и запрос на изменения из профайлера в ответе**:
+- на `MyISAM`
+- на `InnoDB`
+  
+	~~~MYSQL
+	|        5 | 0.05234425 | ALTER TABLE test_db.orders ENGINE=MyISAM
+	|        6 | 0.07052575 | ALTER TABLE test_db.orders ENGINE=InnoDB
+	~~~
+  
+
+	~~~MYSQL
+	SELECT  QUERY_ID, SUM(DURATION) FROM information_schema.PROFILING WHERE QUERY_ID in (5,6) GROUP BY QUERY_ID ORDER BY 1;
+	+----------+---------------+
+	| QUERY_ID | SUM(DURATION) |
+	+----------+---------------+
+	|        5 |      0.052348 |
+	|        6 |      0.070529 |
+	+----------+---------------+
+	2 rows in set, 1 warning (0.00 sec)
 	~~~
