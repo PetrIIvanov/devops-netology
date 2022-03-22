@@ -43,49 +43,49 @@
     - Фамилия "Pretty"
     - Имя "James"
 
-	~~~MYSQL
-	CREATE USER 'test'@'localhost'
-	  IDENTIFIED WITH mysql_native_password BY 'test-pass'
-	  WITH MAX_QUERIES_PER_HOUR 100 
-	  PASSWORD EXPIRE INTERVAL 180 DAY
-	  FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2  
-	  ATTRIBUTE '{"fname": "James", "lname": "Pretty"}';
-	~~~
+~~~MYSQL
+CREATE USER 'test'@'localhost'
+  IDENTIFIED WITH mysql_native_password BY 'test-pass'
+  WITH MAX_QUERIES_PER_HOUR 100 
+  PASSWORD EXPIRE INTERVAL 180 DAY
+  FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2  
+  ATTRIBUTE '{"fname": "James", "lname": "Pretty"}';
+~~~
 
 
 Предоставьте привилегии пользователю `test` на операции SELECT базы `test_db`.  
 
   
-	~~~MYSQL
-	GRANT SELECT ON test_db.* TO 'test'@'localhost';
-	~~~
+~~~MYSQL
+GRANT SELECT ON test_db.* TO 'test'@'localhost';
+~~~
   
  
     
 Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
   
-	~~~MYSQL
-	SELECT
-	USER AS User,
-	HOST AS Host,
-	CONCAT(ATTRIBUTE->>"$.fname"," ",ATTRIBUTE->>"$.lname") AS 'Full Name',
-	ATTRIBUTE->>"$.comment" AS Comment
-	FROM INFORMATION_SCHEMA.USER_ATTRIBUTES
-	WHERE USER='test' AND HOST='localhost';
-	~~~
+~~~MYSQL
+SELECT
+USER AS User,
+HOST AS Host,
+CONCAT(ATTRIBUTE->>"$.fname"," ",ATTRIBUTE->>"$.lname") AS 'Full Name',
+ATTRIBUTE->>"$.comment" AS Comment
+FROM INFORMATION_SCHEMA.USER_ATTRIBUTES
+WHERE USER='test' AND HOST='localhost';
+~~~
   
 Output:  
   
   
-	~~~MYSQL
-	+------+-----------+--------------+---------+
-	| User | Host      | Full Name    | Comment |
-	+------+-----------+--------------+---------+
-	| test | localhost | James Pretty | NULL    |
-	+------+-----------+--------------+---------+
-	1 row in set (0.01 sec)
-	~~~
+~~~MYSQL
++------+-----------+--------------+---------+
+| User | Host      | Full Name    | Comment |
++------+-----------+--------------+---------+
+| test | localhost | James Pretty | NULL    |
++------+-----------+--------------+---------+
+1 row in set (0.01 sec)
+~~~
 
 ## Задача 3
 
@@ -94,34 +94,34 @@ Output:
 
 Исследуйте, какой `engine` используется в таблице БД `test_db` и **приведите в ответе**.
   
-	~~~MYSQL
-	SELECT TABLE_NAME,
-		   ENGINE
-	FROM   information_schema.TABLES
-	WHERE  TABLE_SCHEMA = 'test_db';
+~~~MYSQL
+SELECT TABLE_NAME,
+	   ENGINE
+FROM   information_schema.TABLES
+WHERE  TABLE_SCHEMA = 'test_db';
 
-	--->> InnoDB
+--->> InnoDB
 
-	~~~
+~~~
   
  
 Измените `engine` и **приведите время выполнения и запрос на изменения из профайлера в ответе**:
 - на `MyISAM`
 - на `InnoDB`
   
-	~~~MYSQL
-	|        5 | 0.05234425 | ALTER TABLE test_db.orders ENGINE=MyISAM
-	|        6 | 0.07052575 | ALTER TABLE test_db.orders ENGINE=InnoDB
-	~~~
-  
+~~~MYSQL
+|        5 | 0.05234425 | ALTER TABLE test_db.orders ENGINE=MyISAM
+|        6 | 0.07052575 | ALTER TABLE test_db.orders ENGINE=InnoDB
+~~~
 
-	~~~MYSQL
-	SELECT  QUERY_ID, SUM(DURATION) FROM information_schema.PROFILING WHERE QUERY_ID in (5,6) GROUP BY QUERY_ID ORDER BY 1;
-	+----------+---------------+
-	| QUERY_ID | SUM(DURATION) |
-	+----------+---------------+
-	|        5 |      0.052348 |
-	|        6 |      0.070529 |
-	+----------+---------------+
-	2 rows in set, 1 warning (0.00 sec)
-	~~~
+
+~~~MYSQL
+SELECT  QUERY_ID, SUM(DURATION) FROM information_schema.PROFILING WHERE QUERY_ID in (5,6) GROUP BY QUERY_ID ORDER BY 1;
++----------+---------------+
+| QUERY_ID | SUM(DURATION) |
++----------+---------------+
+|        5 |      0.052348 |
+|        6 |      0.070529 |
++----------+---------------+
+2 rows in set, 1 warning (0.00 sec)
+~~~
