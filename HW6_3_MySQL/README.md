@@ -30,3 +30,30 @@
 	~~~
 
 В следующих заданиях мы будем продолжать работу с данным контейнером.
+
+
+## Задача 2
+
+Создайте пользователя test в БД c паролем test-pass, используя:
+- плагин авторизации mysql_native_password
+- срок истечения пароля - 180 дней 
+- количество попыток авторизации - 3 
+- максимальное количество запросов в час - 100
+- аттрибуты пользователя:
+    - Фамилия "Pretty"
+    - Имя "James"
+
+	~~~MYSQL
+	CREATE USER 'test'@'localhost'
+	  IDENTIFIED WITH mysql_native_password BY 'test-pass'
+	  WITH MAX_QUERIES_PER_HOUR 100 
+	  PASSWORD EXPIRE INTERVAL 180 DAY
+	  FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2  
+	  ATTRIBUTE '{"fname": "James", "lname": "Pretty"}';
+	~~~
+
+
+Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
+    
+Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
+**приведите в ответе к задаче**.
