@@ -53,7 +53,30 @@
 	~~~
 
 
-Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
+Предоставьте привилегии пользователю `test` на операции SELECT базы `test_db`.
+	~~~MYSQL
+	GRANT SELECT ON test_db.* TO 'test'@'localhost';
+	~~~
+
     
 Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
+
+	~~~MYSQL
+	SELECT
+	USER AS User,
+	HOST AS Host,
+	CONCAT(ATTRIBUTE->>"$.fname"," ",ATTRIBUTE->>"$.lname") AS 'Full Name',
+	ATTRIBUTE->>"$.comment" AS Comment
+	FROM INFORMATION_SCHEMA.USER_ATTRIBUTES
+	WHERE USER='test' AND HOST='localhost';
+	~~~
+Output:
+	~~~
+	+------+-----------+--------------+---------+
+	| User | Host      | Full Name    | Comment |
+	+------+-----------+--------------+---------+
+	| test | localhost | James Pretty | NULL    |
+	+------+-----------+--------------+---------+
+	1 row in set (0.01 sec)
+	~~~
