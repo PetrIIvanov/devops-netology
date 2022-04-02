@@ -63,3 +63,50 @@ limit 1;
 ~~~
 
 
+## Задача 3
+
+Архитектор и администратор БД выяснили, что ваша таблица orders разрослась до невиданных размеров и
+поиск по ней занимает долгое время. Вам, как успешному выпускнику курсов DevOps в нетологии предложили
+провести разбиение таблицы на 2 (шардировать на orders_1 - price>499 и orders_2 - price<=499).
+
+Предложите SQL-транзакцию для проведения данной операции.
+
+~~~sql
+
+-- start a transaction
+BEGIN;
+
+ALTER TABLE orders rename to orders_old; 
+
+CREATE TABLE public.orders (
+	id serial4 NOT NULL,
+	title varchar(80) NOT NULL,
+	price int4 NULL DEFAULT 0,
+	CONSTRAINT orders_pkey_new PRIMARY KEY (price, id)
+) partition by range  (price);
+
+CREATE TABLE orders_1 PARTITION of orders
+FOR values from (500) TO (MAXVALUE);
+
+CREATE TABLE orders_2 PARTITION of orders
+FOR values from (MINVALUE) to (500);
+
+INSERT INTO public.orders
+(title, price)
+select title, price from orders_old;
+
+DROP TABLE orders_old;
+
+-- commit the change (or roll it back later)
+COMMIT;
+
+~~~
+
+Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?  
+
+	См. выше
+
+	
+
+
+
