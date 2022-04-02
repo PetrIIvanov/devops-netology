@@ -32,3 +32,34 @@
 
 
 
+## Задача 2
+
+Используя `psql` создайте БД `test_database`.
+
+Изучите [бэкап БД](https://github.com/netology-code/virt-homeworks/tree/master/06-db-04-postgresql/test_data).
+
+Восстановите бэкап БД в `test_database`.
+
+Перейдите в управляющую консоль `psql` внутри контейнера.
+
+Подключитесь к восстановленной БД и проведите операцию ANALYZE для сбора статистики по таблице.
+
+Используя таблицу [pg_stats](https://postgrespro.ru/docs/postgresql/12/view-pg-stats), найдите столбец таблицы `orders` 
+с наибольшим средним значением размера элементов в байтах.
+
+**Приведите в ответе** команду, которую вы использовали для вычисления и полученный результат.
+
+	~~~psql
+	select
+		attname
+	from
+		pg_stats
+	where
+		tablename = 'orders'
+	order by
+		avg_width desc
+	limit 1;
+
+	~~~
+
+
