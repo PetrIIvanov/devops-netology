@@ -81,8 +81,8 @@ ALTER TABLE orders rename to orders_old;
 CREATE TABLE public.orders (
 	id serial4 NOT NULL,
 	title varchar(80) NOT NULL,
-	price int4 NULL DEFAULT 0,
-	CONSTRAINT orders_pkey_new PRIMARY KEY (price, id)
+	price int4 NULL DEFAULT 0
+
 ) partition by range  (price);
 
 CREATE TABLE orders_1 PARTITION of orders
@@ -106,7 +106,30 @@ COMMIT;
 
 	См. выше
 
-	
+~~~sql
+SELECT id, title, price
+FROM public.orders_1;
+
+
+SELECT id, title, price
+FROM public.orders_2;
+
+~~~
+
+## Задача 4
+
+Используя утилиту `pg_dump` создайте бекап БД `test_database`.
+
+~~~
+pg_dump -U postgres -F t test_database > /var/lib/postgresql/backup/hw6_4_test_database_backup.tar
+~~~	
+
+Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?  
+
+Вот такое добавить
+~~~sql
+ALTER TABLE orders ADD CONSTRAINT order_title_unique UNIQUE (title);
+~~~
 
 
 
