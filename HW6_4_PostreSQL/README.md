@@ -49,17 +49,17 @@
 
 **Приведите в ответе** команду, которую вы использовали для вычисления и полученный результат.
 
-	~~~sql
-	select
-		attname
-	from
-		pg_stats
-	where
-		tablename = 'orders'
-	order by
-		avg_width desc
-	limit 1;
+~~~sql
+select
+	attname
+from
+	pg_stats
+where
+	tablename = 'orders'
+order by
+	avg_width desc
+limit 1;
 
-	~~~
+~~~
 
 
