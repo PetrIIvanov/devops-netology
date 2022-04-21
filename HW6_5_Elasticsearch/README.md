@@ -147,3 +147,37 @@ yellow open   ind-3 S1YORV_3TIGPg51_Fkod6g   4   2          0            0      
 ~~~
 [root@fb5e769b9086 ~]# curl -X DELETE "localhost:9200/ind-*?pretty"
 ~~~
+
+## Задача 3
+
+В данном задании вы научитесь:
+- создавать бэкапы данных
+- восстанавливать индексы из бэкапов
+
+**Приведите в ответе** запрос API и результат вызова API для создания репозитория.
+
+Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.
+
+
+## Решение задачи 3
+  
+~~~
+[root@fb5e769b9086 ~]# curl -X PUT "localhost:9200/_snapshot/my_repository?pretty" -H 'Content-Type: application/json' -d'
+{
+  "type": "fs",
+  "settings": {
+    "location": "/usr/share/elasticsearch/snapshots"
+  }
+}
+'
+{
+  "acknowledged" : true
+}
+~~~
+
+
+
+~~~
+health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test  dNQlpd8-SficfJ7sTZavyg   1   0          0            0       208b           208b
+~~~
