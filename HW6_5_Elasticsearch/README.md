@@ -160,7 +160,8 @@ yellow open   ind-3 S1YORV_3TIGPg51_Fkod6g   4   2          0            0      
 
 
 ## Решение задачи 3
-  
+
+**Приведите в ответе** запрос API и результат вызова API для создания репозитория.  
 ~~~
 [root@fb5e769b9086 ~]# curl -X PUT "localhost:9200/_snapshot/my_repository?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -176,8 +177,52 @@ yellow open   ind-3 S1YORV_3TIGPg51_Fkod6g   4   2          0            0      
 ~~~
 
 
-
+Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.
 ~~~
 health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test  dNQlpd8-SficfJ7sTZavyg   1   0          0            0       208b           208b
+~~~
+
+[Создайте `snapshot`](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-take-snapshot.html) 
+состояния кластера `elasticsearch`.
+
+**Приведите в ответе** список файлов в директории со `snapshot`ами.
+
+~~~
+[root@fb5e769b9086 ~]# # PUT _snapshot/my_repository/<my_snapshot_{now/d}>
+[root@fb5e769b9086 ~]# curl -X PUT "localhost:9200/_snapshot/my_repository/%3Cmy_snapshot_%7Bnow%2Fd%7D%3E?pretty"
+{
+  "accepted" : true
+}
+[root@fb5e769b9086 ~]# ls /usr/share/elasticsearch/snapshots/
+index-0  index.latest  indices  meta-mPnS1UZhTyCzDjaoEUePig.dat  snap-mPnS1UZhTyCzDjaoEUePig.dat
+~~~
+
+
+Удалите индекс `test` и создайте индекс `test-2`. **Приведите в ответе** список индексов.
+
+~~~
+[root@fb5e769b9086 ~]# curl -X GET "localhost:9200/_cat/indices/*?v=true&s=index&pretty"
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 8IqRagrsStOpCJvPvypfmQ   1   0          0            0       208b           208b
+~~~
+
+[Восстановите](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-restore-snapshot.html) состояние
+кластера `elasticsearch` из `snapshot`, созданного ранее. 
+
+**Приведите в ответе** запрос к API восстановления и итоговый список индексов.
+
+~~~
+[root@fb5e769b9086 ~]# curl -X POST "localhost:9200/_snapshot/my_repository/my_snapshot_2022.04.21/_restore?pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "indices": "test"
+> }
+> '
+{
+  "accepted" : true
+}
+[root@fb5e769b9086 ~]# curl -X GET "localhost:9200/_cat/indices/*?v=true&s=index&pretty"
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test   5Vn0pWljTJi0DujdqGdBaw   1   0          0            0       208b           208b
+green  open   test-2 8IqRagrsStOpCJvPvypfmQ   1   0          0            0       208b           208b
 ~~~
