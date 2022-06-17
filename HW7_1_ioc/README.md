@@ -40,6 +40,27 @@
 
 Если для ответа на эти вопросы недостаточно информации, то напишите какие моменты уточните на совещании.
 
+## Решение задачи 1
+
+1. Какой тип инфраструктуры будем использовать для этого проекта: изменяемый или не изменяемый?
+	
+	Изменяемый. Придётся поднимать всё равно DEV/TEST/UAT/PROD. Так как это сервис для внешних клиентов
+	то там возможны вариации по версиям API. Их нужно отдельно будет поддерживать и возможно держать в проде параллельно. 
+	
+1. Будет ли центральный сервер для управления инфраструктурой?
+	
+	Если делать центральный сервер, то для всей инфраструктуры, а не только для этого проекта. Тем более для одного клиента. 
+	Я бы начал с Packer+Terraform+Ansible, потом бы переполз вместе со всеми. 
+	
+1. Будут ли агенты на серверах?
+
+	Только для оркестрации контейнерами и мониторинга. Прометей и графана.  
+	
+1. Будут ли использованы средства для управления конфигурацией или инициализации ресурсов? 
+
+	Да, пусть кубер там поднимает контейнеры по необходимости разных версий в нужных количествах. По мере необходимости добавим ещё нод. 
+
+
 
 ## Задача 2. Установка терраформ. 
 
@@ -47,6 +68,19 @@
 
 Установите терраформ при помощи менеджера пакетов используемого в вашей операционной системе.
 В виде результата этой задачи приложите вывод команды `terraform --version`.
+
+## Решение задачи 2
+
+~~~
+Terraform v1.1.6
+on linux_amd64
++ provider registry.terraform.io/hashicorp/local v2.1.0
++ provider registry.terraform.io/hashicorp/null v3.1.0
++ provider registry.terraform.io/yandex-cloud/yandex v0.72.0
+
+Your version of Terraform is out of date! The latest version
+is 1.2.3. You can update by downloading from https://www.terraform.io/downloads.html
+~~~
 
 ## Задача 3. Поддержка легаси кода. 
 
@@ -59,6 +93,29 @@
 или виртуальной машине.
 
 ---
+
+## Решение задачи 3
+
+~~~
+root@vagrant:~# terraform -version
+Terraform v1.1.6
+on linux_amd64
+
+Your version of Terraform is out of date! The latest version
+is 1.2.3. You can update by downloading from https://www.terraform.io/downloads.html
+root@vagrant:~# terraform12 -version
+Terraform v0.12.31
+
+Your version of Terraform is out of date! The latest version
+is 1.2.3. You can update by downloading from https://www.terraform.io/downloads.html
+root@vagrant:~# terraform13 -version
+Terraform v0.13.7
+
+Your version of Terraform is out of date! The latest version
+is 1.2.3. You can update by downloading from https://www.terraform.io/downloads.html
+root@vagrant:~#
+~~~
+
 
 ### Как cдавать задание
 
