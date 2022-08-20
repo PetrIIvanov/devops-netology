@@ -34,6 +34,13 @@
 
 ## Решение 3.1
 
+Запуск такой
+~~~bash
+cat data_01.txt | go run task01.go
+~~~
+
+Текст
+
 ~~~Golang
 package main
 
@@ -58,7 +65,7 @@ func main() {
         for scanner.Scan() {
 
             stdin = append(stdin,scanner.Text())
-            //fmt.Println(scanner.Text())
+
         }
 
         if err := scanner.Err(); err != nil {
@@ -68,7 +75,6 @@ func main() {
         for _, s := range stdin {
             var foots float64
             foots,_ = strconv.ParseFloat(s, 32)
-            //fmt.Println("%f",foots)
             output = fmt.Sprintf("Meters: %s Foots: %.2f", s, foots * 0.3048)
             fmt.Println(output)
         }
@@ -83,6 +89,35 @@ func main() {
     ```
     x := []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
     ```
+## Решение 3.2
+
+~~~golang
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    var minimum int
+    var x = []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
+
+    if (len(x) < 1) {
+        fmt.Println("Zero length array\n")
+    }
+    minimum = x[0]
+
+    for _, el := range x {
+        if minimum > el {
+                minimum = el
+        } // end of if
+    } // end of for
+
+    fmt.Println(fmt.Sprintf("Minimum is %d", minimum))
+}
+~~~
+
+
 1. Напишите программу, которая выводит числа от 1 до 100, которые делятся на 3. То есть `(3, 6, 9, …)`.
 
 В виде решения ссылку на код или сам код. 
