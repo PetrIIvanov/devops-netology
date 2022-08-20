@@ -31,6 +31,53 @@
         fmt.Println(output)    
     }
     ```
+
+## Решение 3.1
+
+~~~Golang
+package main
+
+import (
+    "bufio"
+    "fmt"
+    "log"
+    "os"
+    "strconv"
+)
+
+func main() {
+    // check if there is somethinig to read on STDIN
+    stat, _ := os.Stdin.Stat()
+
+
+    if (stat.Mode() & os.ModeCharDevice) == 0 {
+        var stdin []string
+        var output string
+
+        scanner := bufio.NewScanner(os.Stdin)
+        for scanner.Scan() {
+
+            stdin = append(stdin,scanner.Text())
+            //fmt.Println(scanner.Text())
+        }
+
+        if err := scanner.Err(); err != nil {
+            log.Fatal(err)
+        }
+
+        for _, s := range stdin {
+            var foots float64
+            foots,_ = strconv.ParseFloat(s, 32)
+            //fmt.Println("%f",foots)
+            output = fmt.Sprintf("Meters: %s Foots: %.2f", s, foots * 0.3048)
+            fmt.Println(output)
+        }
+    } else {
+        fmt.Println("------------\n\nPlease pass data via stdin\n\n------------\n")
+    }
+}
+~~~ 
+
  
 1. Напишите программу, которая найдет наименьший элемент в любом заданном списке, например:
     ```
