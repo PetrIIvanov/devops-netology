@@ -16,8 +16,9 @@
 гитхабе. 
 
 
-[data_source](https://github.com/hashicorp/terraform-provider-aws/blob/ba986c9ec5fc1db0e8deb4028e799e05be1bfa35/internal/provider/provider.go#L414)
-[resourse](https://github.com/hashicorp/terraform-provider-aws/blob/ba986c9ec5fc1db0e8deb4028e799e05be1bfa35/internal/provider/provider.go#L922)
+[data_source тут](https://github.com/hashicorp/terraform-provider-aws/blob/ba986c9ec5fc1db0e8deb4028e799e05be1bfa35/internal/provider/provider.go#L414)  
+
+[resourse тут](https://github.com/hashicorp/terraform-provider-aws/blob/ba986c9ec5fc1db0e8deb4028e799e05be1bfa35/internal/provider/provider.go#L922)
 
  
 1. Для создания очереди сообщений SQS используется ресурс `aws_sqs_queue` у которого есть параметр `name`. 
